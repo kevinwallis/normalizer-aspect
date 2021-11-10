@@ -37,8 +37,6 @@ public class NormalizerAspect {
                     .filter(normalizer -> normalizer.getNormalizedType() == arg.getClass())
                     .reduce(arg, NormalizerAspect::callNormalizer, NormalizerAspect::combiner);
 
-            System.out.println(newArg);
-
             newArgsList.add(newArg);
         }
 
