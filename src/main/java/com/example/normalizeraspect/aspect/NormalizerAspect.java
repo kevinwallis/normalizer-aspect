@@ -7,8 +7,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,14 +44,8 @@ public class NormalizerAspect {
         return joinPoint.proceed(newArgs);
     }
 
-    public static Object callNormalizer(Object obj, Normalizer<?> normalizer) {
-        try {
-            Method normalize = Normalizer.class.getMethod("normalize", Object.class);
-            return normalize.invoke(normalizer, obj);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            return obj;
-        }
+    public static <T> Object callNormalizer(Object obj, Normalizer<T> normalizer) {
+        return normalizer.normalize((T) obj);
     }
 
     public static Object combiner(Object obj1, Object obj2) {
