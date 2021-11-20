@@ -1,14 +1,15 @@
 package com.example.normalizeraspect.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Person {
 
     private String firstName;

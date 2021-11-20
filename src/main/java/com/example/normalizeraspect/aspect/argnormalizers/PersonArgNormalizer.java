@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 
 @Component
 class PersonArgNormalizer implements ArgNormalizer<Person> {
@@ -23,7 +24,7 @@ class PersonArgNormalizer implements ArgNormalizer<Person> {
             person.setLastName(lastName.toUpperCase());
         }
 
-        person.setBirthday(obj.getBirthday());
+        person.setBirthday(LocalDateTime.from(obj.getBirthday()));
         return person;
     }
 
