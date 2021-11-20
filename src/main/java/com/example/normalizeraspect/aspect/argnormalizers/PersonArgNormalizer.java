@@ -4,32 +4,31 @@ import com.example.normalizeraspect.model.Person;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 @Component
 class PersonArgNormalizer implements ArgNormalizer<Person> {
 
     @Override
-    public Person normalize(Person obj) {
-        Person person = new Person();
+    public Person normalize(Person person) {
+        Person normalizedPerson = new Person();
 
-        final String firstName = obj.getFirstName();
+        final String firstName = person.getFirstName();
         if (StringUtils.hasText(firstName)) {
-            person.setFirstName(firstName.toUpperCase());
+            normalizedPerson.setFirstName(firstName.toUpperCase());
         }
 
-        final String lastName = obj.getLastName();
+        final String lastName = person.getLastName();
         if (StringUtils.hasText(lastName)) {
-            person.setLastName(lastName.toUpperCase());
+            normalizedPerson.setLastName(lastName.toUpperCase());
         }
 
-        person.setBirthday(LocalDateTime.from(obj.getBirthday()));
-        return person;
+        normalizedPerson.setBirthday(person.getBirthday());
+        return normalizedPerson;
     }
 
     @Override
-    public Type getNormalizedType() {
-        return Person.class;
+    public boolean canNormalize(Person person) {
+        return true;
     }
 }

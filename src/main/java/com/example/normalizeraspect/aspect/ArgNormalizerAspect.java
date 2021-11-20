@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +35,7 @@ public class ArgNormalizerAspect {
         for (Object arg : args) {
 
             Object newArg = this.normalizers.stream()
-                    .filter(normalizer -> normalizer.getNormalizedType() == arg.getClass())
+                    .filter(normalizer -> canNormalize(arg, normalizer))
                     .reduce(arg, ArgNormalizerAspect::callArgNormalizer, ArgNormalizerAspect::combiner);
 
             newArgsList.add(newArg);
@@ -45,8 +47,19 @@ public class ArgNormalizerAspect {
         return joinPoint.proceed(newArgs);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Object callArgNormalizer(Object obj, ArgNormalizer<T> normalizer) {
         return normalizer.normalize((T) obj);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> boolean canNormalize(Object obj, ArgNormalizer<T> normalizer) {
+        return getArgNormalizerType(normalizer) == obj.getClass()
+                && normalizer.canNormalize((T)obj);
+    }
+
+    public static Type getArgNormalizerType(ArgNormalizer<?> normalizer) {
+        return ((ParameterizedType)normalizer.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 
     public static Object combiner(Object obj1, Object obj2) {
