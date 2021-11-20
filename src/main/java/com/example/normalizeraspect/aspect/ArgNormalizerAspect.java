@@ -1,5 +1,6 @@
 package com.example.normalizeraspect.aspect;
 
+import com.example.normalizeraspect.aspect.argnormalizers.ArgNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,16 +15,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 @Aspect
-public class NormalizerAspect {
+public class ArgNormalizerAspect {
 
-    private final List<Normalizer<?>> normalizers;
+    private final List<ArgNormalizer<?>> normalizers;
 
-    @Pointcut("@annotation(Normalize)")
-    public void isNormalizeAnnotated() {
+    @Pointcut("@annotation(com.example.normalizeraspect.aspect.NormalizeArgs)")
+    public void isNormalizeArgAnnotated() {
     }
 
-    @Around("isNormalizeAnnotated()")
-    public Object normalize(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("isNormalizeArgAnnotated()")
+    public Object normalizeArgs(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         System.out.println("Before normalize: " + Arrays.toString(args));
 
@@ -33,7 +34,7 @@ public class NormalizerAspect {
 
             Object newArg = this.normalizers.stream()
                     .filter(normalizer -> normalizer.getNormalizedType() == arg.getClass())
-                    .reduce(arg, NormalizerAspect::callNormalizer, NormalizerAspect::combiner);
+                    .reduce(arg, ArgNormalizerAspect::callArgNormalizer, ArgNormalizerAspect::combiner);
 
             newArgsList.add(newArg);
         }
@@ -44,7 +45,7 @@ public class NormalizerAspect {
         return joinPoint.proceed(newArgs);
     }
 
-    public static <T> Object callNormalizer(Object obj, Normalizer<T> normalizer) {
+    public static <T> Object callArgNormalizer(Object obj, ArgNormalizer<T> normalizer) {
         return normalizer.normalize((T) obj);
     }
 

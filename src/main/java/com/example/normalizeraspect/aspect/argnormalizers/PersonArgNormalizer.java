@@ -1,4 +1,4 @@
-package com.example.normalizeraspect.aspect;
+package com.example.normalizeraspect.aspect.argnormalizers;
 
 import com.example.normalizeraspect.model.Person;
 import org.springframework.stereotype.Component;
@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Type;
 
 @Component
-public class PersonNormalizer implements Normalizer<Person> {
+class PersonArgNormalizer implements ArgNormalizer<Person> {
 
     @Override
     public Person normalize(Person obj) {
